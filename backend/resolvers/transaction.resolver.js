@@ -17,6 +17,7 @@ const transactionResolver = {
             try {
                 if (!context.getUser()) throw new Error(`Unauthorized`)
                 const transaction = await Transaction.findById(transactionId)
+                console.log("transaction", transaction, transactionId)
                 return transaction
             } catch (error) {
                 console.error(`Error getting transaction : ${error}`)

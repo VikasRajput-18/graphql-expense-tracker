@@ -5,7 +5,9 @@ import { GET_AUTH_USER } from "../graphql/query/user.query";
 
 const TransactionForm = () => {
 
-	const [createTransaction, { loading }] = useMutation(CREATE_TRANSACTION)
+	const [createTransaction, { loading }] = useMutation(CREATE_TRANSACTION, {
+		refetchQueries: ["GetTransactions"]
+	})
 	const { data } = useQuery(GET_AUTH_USER);
 
 	console.log(data?.authUser)
@@ -24,11 +26,13 @@ const TransactionForm = () => {
 			date: formData.get("date"),
 		};
 		try {
-			await createTransaction({
+			const { data: _ } = await createTransaction({
 				variables: {
 					input: transactionData
 				}
 			})
+			form.reset()
+			toast.success("Transaction Created Successfully")
 		} catch (error) {
 			console.log(error)
 			toast.error(error.message)

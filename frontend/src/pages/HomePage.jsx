@@ -5,17 +5,20 @@ import Cards from "../components/Cards";
 import TransactionForm from "../components/TransactionForm";
 
 import { MdLogout } from "react-icons/md";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { LOGOUT } from "../graphql/mutation/user.mutation";
 import toast from "react-hot-toast";
+import { TRANSACTIONS } from "../graphql/query/transaction.query";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const HomePage = () => {
+const HomePage = ({ user }) => {
 
-    const [logout, { loading }] = useMutation(LOGOUT ,{
-        refetchQueries : ["GetAuthenticatedUser"]
+    const [logout, { loading }] = useMutation(LOGOUT, {
+        refetchQueries: ["GetAuthenticatedUser"]
     })
+    const { data } = useQuery(TRANSACTIONS)
+
 
     const chartData = {
         labels: ["Saving", "Expense", "Investment"],
@@ -50,7 +53,7 @@ const HomePage = () => {
                         Spend wisely, track wisely
                     </p>
                     <img
-                        src={"https://avatar.iran.liara.run/public/boy"}
+                        src={user?.profile_picture}
                         className='w-11 h-11 rounded-full border cursor-pointer'
                         alt='Avatar'
                     />
@@ -65,7 +68,7 @@ const HomePage = () => {
 
                     <TransactionForm />
                 </div>
-                <Cards />
+                <Cards transactions={data?.transactions} />
             </div>
         </>
     );
