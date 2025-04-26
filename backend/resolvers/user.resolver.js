@@ -1,4 +1,3 @@
-import { users } from "../dummy/data.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs"
 
@@ -49,7 +48,7 @@ const userResolver = {
             }
         },
 
-        logout: async (_, _, context) => {
+        logout: async (_, args, context) => {
             try {
                 await context.logout();
                 context.req.session.destroy((err) => {
@@ -67,7 +66,7 @@ const userResolver = {
     },
 
     Query: {
-        authUser: async (_, _, context) => {
+        authUser: async (_, args, context) => {
             try {
                 const user = await context.getUser()
                 return user
