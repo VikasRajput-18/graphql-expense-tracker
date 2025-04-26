@@ -1,4 +1,15 @@
+import { useMutation, useQuery } from "@apollo/client";
+import toast from "react-hot-toast";
+import { CREATE_TRANSACTION } from "../graphql/mutation/transaction.mutation";
+import { GET_AUTH_USER } from "../graphql/query/user.query";
+
 const TransactionForm = () => {
+
+	const [createTransaction, { loading }] = useMutation(CREATE_TRANSACTION)
+	const { data } = useQuery(GET_AUTH_USER);
+
+	console.log(data?.authUser)
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -12,7 +23,16 @@ const TransactionForm = () => {
 			location: formData.get("location"),
 			date: formData.get("date"),
 		};
-		console.log("transactionData", transactionData);
+		try {
+			await createTransaction({
+				variables: {
+					input: transactionData
+				}
+			})
+		} catch (error) {
+			console.log(error)
+			toast.error(error.message)
+		}
 	};
 
 	return (
@@ -146,10 +166,11 @@ const TransactionForm = () => {
 			</div>
 			{/* SUBMIT BUTTON */}
 			<button
-				className='text-white font-bold w-full rounded px-4 py-2 bg-gradient-to-br
+				className='cursor-pointer text-white font-bold w-full rounded px-4 py-2 bg-gradient-to-br
           from-pink-500 to-pink-500 hover:from-pink-600 hover:to-pink-600
 						disabled:opacity-70 disabled:cursor-not-allowed'
 				type='submit'
+				disabled={loading}
 			>
 				Add Transaction
 			</button>

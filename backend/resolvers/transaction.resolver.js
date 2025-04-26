@@ -33,7 +33,9 @@ const transactionResolver = {
                 if (!description || !paymentType || !category || !amount || !date) {
                     throw new Error("All fields are required")
                 }
-
+                console.log({
+                    description, paymentType, category, amount, location, date, userId: context.getUser()._id
+                })
                 const newTransaction = await Transaction.create({
                     description, paymentType, category, amount, location, date, userId: context.getUser()._id
                 })
