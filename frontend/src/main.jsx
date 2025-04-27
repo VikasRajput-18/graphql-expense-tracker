@@ -8,9 +8,9 @@ import GridBackground from './components/ui/GridBackground.jsx'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:8080/graphql',
+  uri: import.meta.env.VITE_NODE_ENV === "development" ? 'http://localhost:8080/graphql' : "/graphql",
   cache: new InMemoryCache(),
-  credentials: "include" 
+  credentials: "include"
 });
 
 createRoot(document.getElementById('root')).render(

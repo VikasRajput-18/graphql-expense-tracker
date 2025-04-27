@@ -18,9 +18,13 @@ import mergedResolver from "./resolvers/index.js";
 import mergedTypeDefs from "./typeDefs/index.js";
 import { connectDB } from './db/connectDB.js';
 import { configurePassport } from './passport/passport.config.js';
+import path from 'path';
 
 dotenv.config()
 configurePassport()
+
+
+const __dirname = path.resolve()
 
 const app = express()
 app.use(express.urlencoded({ extended: true }));
@@ -70,6 +74,12 @@ app.use(
         },
     }),
 );
+
+
+app.use(express.static(path.join(__dirname, "frontend/dist")))
+app.use("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "frontend/dist", "index.html"))
+})
 
 // Modified server startup
 await new Promise((resolve) =>
