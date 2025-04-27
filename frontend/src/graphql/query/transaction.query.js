@@ -27,6 +27,19 @@ export const TRANSACTION = gql`
         amount
         location  
         date
+        user {
+            name
+            username
+        }
     }
    }
 `
+export const CATEGORY_STATITICS = gql`
+   query CategoryStatitics{
+    categoryStatistics {
+        category
+        totalAmount
+    }
+   }
+`
+

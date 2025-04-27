@@ -8,12 +8,18 @@ const transactionTypeDef = `#graphql
     amount : Float!
     location : String
     date : String!
+    user : User!
+   }
+
+   type CategoryStatistic {
+      category: String!
+      totalAmount: Float!
    }
 
    type Query {
     transactions : [Transaction!]
     transaction(transactionId : ID!) : Transaction
-   #  TODO => Add Category Statics Query
+    categoryStatistics : [CategoryStatistic!]!
    }
 
    type Mutation {

@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Transaction from "../models/transaction.model.js";
 import bcrypt from "bcryptjs"
 
 const userResolver = {
@@ -92,6 +93,18 @@ const userResolver = {
     },
 
     // TODO => USER/TRANSACTION RELATION
+    User: {
+        transactions: async (parent, args, context) => {
+            try {
+                const transactions = await Transaction.find({ userId: parent._id })
+                return transactions
+
+            } catch (error) {
+                console.error(`Error in user user,transactions resolver: ${error}`);
+                throw new Error(error.message || "Internal Server Error")
+            }
+        }
+    }
 }
 
 export default userResolver

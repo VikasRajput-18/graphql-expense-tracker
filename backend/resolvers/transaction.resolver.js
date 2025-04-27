@@ -1,4 +1,5 @@
 import Transaction from "../models/transaction.model.js"
+import User from "../models/user.model.js";
 
 const transactionResolver = {
     Query: {
@@ -24,8 +25,29 @@ const transactionResolver = {
                 throw new Error(error.message || "Internal Server Error")
             }
 
+        },
+        categoryStatistics: async (parent, args, context) => {
+            try {
+                if (!context.getUser()) throw new Error("Unauthorized")
+                const userId = context.getUser()._id
+                const transactions = await Transaction.find({ userId })
+                const categoryMap = {}
+
+                transactions.forEach((transaction) => {
+                    if (!categoryMap[transaction.category]) {
+                        categoryMap[transaction.category] = 0
+                    }
+                    categoryMap[transaction.category] += transaction.amount
+                });
+
+
+                return Object.entries(categoryMap).map(([category, amount]) => ({ category, totalAmount: amount }))
+
+            } catch (error) {
+                console.error(`Error in categoryStatistics : ${error}`)
+                throw new Error(error.message || "Internal Server Error")
+            }
         }
-        // TODO => Add Category Statics Query
     },
     Mutation: {
         createTransaction: async (_, { input }, context) => {
@@ -34,9 +56,7 @@ const transactionResolver = {
                 if (!description || !paymentType || !category || !amount || !date) {
                     throw new Error("All fields are required")
                 }
-                console.log({
-                    description, paymentType, category, amount, location, date, userId: context.getUser()._id
-                })
+
                 const newTransaction = await Transaction.create({
                     description, paymentType, category, amount, location, date, userId: context.getUser()._id
                 })
@@ -73,9 +93,25 @@ const transactionResolver = {
             }
         },
 
+
+
+    },
+
+    Transaction: {
+        user: async (parent) => {
+            try {
+                const userId = parent.userId // parent is transaction
+                const user = await User.findById(userId);
+                return user
+            } catch (error) {
+                console.error(`Error in transaction.user : ${error}`)
+                throw new Error(error.message || "Internal Server Error")
+            }
+        }
     }
 
-    // TODO => ADD Transaction/User Relation
+
+
 }
 
 export default transactionResolver

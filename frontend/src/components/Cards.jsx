@@ -4,14 +4,13 @@ import { DELETE_TRANSACRION } from "../graphql/mutation/transaction.mutation";
 
 import toast from "react-hot-toast"
 
-const Cards = ({ transactions }) => {
+const Cards = ({ transactions  ,profile_picture}) => {
 
     const [deleteTransaction] = useMutation(DELETE_TRANSACRION, {
-        refetchQueries: ["GetTransactions"]
+        refetchQueries: ["GetTransactions", "CategoryStatitics"]
     })
 
     const handleDelete = async (transactionId) => {
-        console.log(transactionId)
         try {
             await deleteTransaction({
                 variables: {
@@ -30,7 +29,7 @@ const Cards = ({ transactions }) => {
             <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-start mb-20'>
                 {
                     transactions?.map(transaction => (
-                        <Card cardType={transaction.category} key={transaction?._id} {...transaction} handleDelete={() => handleDelete(transaction?._id)} />
+                        <Card cardType={transaction.category} key={transaction?._id} profile_picture={profile_picture} {...transaction} handleDelete={() => handleDelete(transaction?._id)} />
                     ))
                 }
             </div>

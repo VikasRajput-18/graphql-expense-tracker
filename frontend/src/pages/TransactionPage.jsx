@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import TransactionFormSkeleton from "../components/skeletion/TransactionSkeleton";
 import { useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom"
-import { TRANSACTION } from "../graphql/query/transaction.query";
+import { CATEGORY_STATITICS, TRANSACTION } from "../graphql/query/transaction.query";
 
 import { toast } from "react-hot-toast"
 import { UPDATE_TRANSACTION } from "../graphql/mutation/transaction.mutation";
 
 const TransactionPage = () => {
     const { id } = useParams()
+    const navigate = useNavigate()
 
     const { data, loading } = useQuery(TRANSACTION, {
         variables: {
@@ -16,10 +17,9 @@ const TransactionPage = () => {
         }
     })
     const [updateTransaction, { loading: updateLoading }] = useMutation(UPDATE_TRANSACTION, {
-        refetchQueries: ["GetTransactions"]
+        // refetchQueries: ["GetTransactions", "CategoryStatitics"]
+        refetchQueries: [{ query: CATEGORY_STATITICS }],
     })
-
-    const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
         description: "",
@@ -29,6 +29,7 @@ const TransactionPage = () => {
         location: "",
         date: "",
     });
+
 
 
     const handleSubmit = async (e) => {
@@ -71,7 +72,6 @@ const TransactionPage = () => {
         }
     }, [data?.transaction])
 
-    console.log({ formData })
 
     if (loading) return <TransactionFormSkeleton />;
 
@@ -116,7 +116,7 @@ const TransactionPage = () => {
                                 id='paymentType'
                                 name='paymentType'
                                 onChange={handleInputChange}
-                                defaultValue={formData.paymentType}
+                                value={formData.paymentType}
                             >
                                 <option value={"card"}>Card</option>
                                 <option value={"cash"}>Cash</option>
@@ -147,7 +147,7 @@ const TransactionPage = () => {
                                 id='category'
                                 name='category'
                                 onChange={handleInputChange}
-                                defaultValue={formData.category}
+                                value={formData.category}
                             >
                                 <option value={"saving"}>Saving</option>
                                 <option value={"expense"}>Expense</option>

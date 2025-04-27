@@ -13,7 +13,7 @@ const categoryColorMap = {
     // Add more categories and corresponding color classes as needed
 };
 
-const Card = ({ cardType, amount, date, description, location, paymentType, handleDelete, _id }) => {
+const Card = ({ cardType, amount, date, description, profile_picture, location, paymentType, handleDelete, _id }) => {
     const cardClass = categoryColorMap[cardType];
     const dateNum = new Date(Number(date));
     const formatDate = dateNum?.toLocaleDateString('en-US', {
@@ -52,7 +52,7 @@ const Card = ({ cardType, amount, date, description, location, paymentType, hand
                 <div className='flex justify-between items-center'>
                     <p className='text-xs text-white font-bold'>{formatDate}</p>
                     <img
-                        src={"https://avatar.iran.liara.run/public/boy"}
+                        src={profile_picture || "https://avatar.iran.liara.run/public/boy"}
                         className='h-8 w-8 border rounded-full'
                         alt=''
                     />
